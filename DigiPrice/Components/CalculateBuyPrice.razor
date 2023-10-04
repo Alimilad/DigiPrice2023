@@ -82,8 +82,8 @@
     {
         [Required(ErrorMessage = "قیمت فروش الزامی است")]
         [Range(1, 10000000000000000000, ErrorMessage = "قیمت فروش باید از صفر بزرگتر باشد")]
-        public double? SellPrice { get; set; }
-        public double Costs { get; set; } = 1000;
+        public int? SellPrice { get; set; }
+        public int Costs { get; set; } = 1000;
         public int Commission { get; set; } = 15;
         public int Profit { get; set; } = 20;
     }
