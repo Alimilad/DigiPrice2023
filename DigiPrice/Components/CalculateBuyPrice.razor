@@ -1,4 +1,5 @@
 ﻿@using System.ComponentModel.DataAnnotations;
+@using DNTPersianUtils.Core;
 ﻿<div class="px-4 py-2 text-justify">
     <h1 class="text-center bold text-2xl ">محاسبه قیمت خرید </h1>
     <EditForm Model="@model" OnValidSubmit="Submited">
@@ -50,6 +51,19 @@
     public void Submited()
     {
         Result = "";
+        if(model.SellPrice < 128500)
+        {
+
+            var x = 100 * model.SellPrice - 1.09 * model.Commission * model.SellPrice - 981000 -100 * model.Costs - model.Profit * model.Costs;
+            var y = model.Profit + 100;
+
+            Result = ((int)(x / y)).NumberToText(Language.Persian) + " تومن ";
+        }
+        else
+        {
+            Result = "نامشخص";
+        }
+
         //double sood = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs) / (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value));
 
         //if (model.SellPrice.Value > 71430)
