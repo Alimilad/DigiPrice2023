@@ -1,0 +1,76 @@
+﻿@using System.ComponentModel.DataAnnotations;
+﻿<div class="px-4 py-2 text-justify">
+    <h1 class="text-center bold text-2xl ">محاسبه قیمت خرید </h1>
+    <EditForm Model="@model" OnValidSubmit="Submited">
+        <DataAnnotationsValidator />
+        <div class="mb-4">
+            <label class="block mb-1">قیمت فروش</label>
+            <InputNumber @bind-Value=model.SellPrice @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.SellPrice" />
+
+        </div>
+        <div class="mb-4">
+            <label class="block mb-1"> کمیسیون</label>
+            <InputNumber @bind-Value=model.Commission @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.Commission" />
+
+        </div>
+       
+        <div class="mb-4">
+            <label class="block mb-1"> هزینه ها</label>
+            <InputNumber @bind-Value=model.Costs @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.Costs" />
+
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1"> سود</label>
+            <InputNumber @bind-Value=model.Profit @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+                        <ValidationMessage For="() => model.Profit" />
+        </div>
+
+        <div class="grid place-items-center">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">محاسبه</button>
+
+        </div>
+
+    </EditForm>
+    @if (!string.IsNullOrEmpty(Result))
+    {
+        <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
+            <p>  قیمت خرید: @Result</p>
+        </div>
+    }
+
+</div>
+
+@code {
+    CalculateBuyPriceViewModel model = new();
+    string Result = "";
+    public void Submited()
+    {
+        Result = "";
+        //double sood = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs) / (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value));
+
+        //if (model.SellPrice.Value > 71430)
+        //{
+        //    model.Boxing = (float)(0.07 * model.SellPrice.Value);
+        //    if (model.Boxing > 50000) model.Boxing = 50000;
+        //}
+        //sood = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs) / (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value));
+        //model.ResultProfit = sood.ToString();
+        //model.ResultProfitInToman = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs).ToString("0.00");
+    }
+
+
+
+    public class CalculateBuyPriceViewModel
+    {
+        [Required(ErrorMessage = "قیمت فروش الزامی است")]
+        [Range(1, 10000000000000000000, ErrorMessage = "قیمت فروش باید از صفر بزرگتر باشد")]
+        public double? SellPrice { get; set; }
+        public double Costs { get; set; } = 1000;
+        public int Commission { get; set; } = 15;
+        public int Profit { get; set; } = 20;
+    }
+}

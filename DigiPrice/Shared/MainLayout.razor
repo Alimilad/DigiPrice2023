@@ -1,0 +1,62 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime js;
+
+<!-- NAV -->
+<nav class=" top-0 z-50 flex flex-row items-center justify-center w-full bg-white border-b shadow dark:bg-dark-second h-14 dark:border-dark-third">
+
+    <!-- MAIN NAV -->
+    <ul class="flex items-center justify-center w-full mx-4 lg:w-max">
+        <li class="w-1/5 text-center md:w-max">
+            <a href="#" class="relative inline-block w-full px-3 py-2 text-3xl text-center text-gray-600 rounded cursor-pointer xl:px-12 hover:bg-gray-100 dark:hover:bg-dark-third dark:text-dark-txt">
+                <i class='bx bx-group'></i>
+            </a>
+        </li>
+        <li class="w-1/5 text-center md:w-max">
+            <a href="#" class="inline-block w-full px-3 py-2 text-3xl text-center text-blue-500 border-b-4 border-blue-500 cursor-pointer xl:px-12">
+                <i class='bx bxs-home'></i>
+            </a>
+        </li>
+
+
+    </ul>
+    <!-- END MAIN NAV -->
+    <!-- RIGHT NAV -->
+    <ul class="absolute right-0 flex items-center justify-center mx-4 ">
+
+        <li>
+            <div @onclick='(() => js.InvokeVoidAsync("onDarkToggleClicked"))' class="relative grid p-3 mx-1 text-xl bg-gray-200 rounded-full cursor-pointer place-items-center dark:bg-dark-third dark:text-dark-txt hover:bg-gray-300" id="dark-mode-toggle">
+                <i class='bx bxs-moon'></i>
+            </div>
+        </li>
+    </ul>
+    <!-- END RIGHT NAV -->
+</nav>
+<!-- END NAV -->
+<!-- MAIN -->
+<div class="flex justify-center h-screen">
+
+
+    <!-- MAIN CONTENT -->
+    <div class="w-full px-2 lg:w-2/3  ">
+        <!-- LIST POST -->
+
+        <div>
+
+            <!-- POST -->
+            <div class="mt-4 bg-white rounded-lg shadow dark:bg-dark-second dark:text-dark-txt">
+
+                @Body
+
+            </div>
+            <!-- END POST -->
+
+
+
+        </div>
+
+        <!-- END LIST POST -->
+    </div>
+    <!-- END MAIN CONTENT -->
+
+</div>
+<!-- END MAIN -->
