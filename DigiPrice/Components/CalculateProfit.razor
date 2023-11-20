@@ -1,0 +1,126 @@
+﻿@using System.ComponentModel.DataAnnotations;
+@using DNTPersianUtils.Core;
+﻿<div class="px-4 py-2 text-justify">
+    <h1 class="text-center bold text-2xl ">محاسبه سود (ریال) </h1>
+    <EditForm Model="@model" OnValidSubmit="Submited">
+        <DataAnnotationsValidator />
+        
+        <div class="mb-4">
+            <label class="block mb-1">قیمت فروش</label>
+            <InputNumber @bind-Value=model.SellPrice @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.SellPrice" />
+
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1">قیمت خرید</label>
+            <InputNumber @bind-Value=model.BuyPrice @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.BuyPrice" />
+
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1"> کمیسیون</label>
+            <InputNumber @bind-Value=model.Commission @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.Commission" />
+
+        </div>
+       
+        <div class="mb-4">
+            <label class="block mb-1"> هزینه ها</label>
+            <InputNumber @bind-Value=model.SellerCost @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.SellerCost" />
+
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1"> درامد</label>
+            <InputNumber @bind-Value=model.Incom @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.Incom" />
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1"> سود</label>
+            <InputNumber @bind-Value=model.Profit @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.Profit" />
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1"> درصد سود</label>
+            <InputNumber @bind-Value=model.ProfitPercent @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
+            <ValidationMessage For="() => model.ProfitPercent" />
+        </div>
+
+        <div class="grid place-items-center">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">محاسبه</button>
+
+        </div>
+
+    </EditForm>
+    
+        <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
+            <p>  درامد: @model.Incom.NumberToText(Language.Persian) + " ریال "</p>
+        </div>
+
+        <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
+            <p>  سود: @model.Profit.NumberToText(Language.Persian) + " ریال "</p>
+        </div>
+
+        <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
+            <p>  درصد سود: @model.ProfitPercent.NumberToText(Language.Persian) + " ریال "</p>
+        </div>
+    
+
+</div>
+
+@code {
+    CalculateProfitViewModel model = new();
+    
+    public void Submited()
+    {
+        
+        //sell = 1550000
+        //buy = 1270000
+        //commistion = sell * 0.08
+        //commistionTax = commistion * 0.09
+        //cost = min(800000, max(90000, sell * 0.07))
+        //costTax = cost * 0.5 * 0.09
+        //incom = sell - commistion - commistionTax - cost - costTax
+        //profit = incom - buy
+        //profitPercent = profit * 100 / sell
+        //print(incom)
+        //print(profit)
+        //print(profitPercent)
+
+        var sell = model.SellPrice;
+        var buy = model.BuyPrice;
+        var commistion = sell * model.Commission/100;
+        var commistionTax = commistion * (decimal)0.09;
+        var cost = Math.Min(800000, Math.Max(90000, sell * (decimal)0.07));
+        var costTax = cost * (decimal)0.5 * (decimal)0.09;
+        model.Incom = sell - commistion - commistionTax - cost - costTax;
+        model.Profit = model.Incom - buy - model.SellerCost;
+        model.ProfitPercent = model.Profit * 100 / sell;
+    }
+
+    /// <summary>
+    /// محاسبه سود
+    /// </summary>
+    public class CalculateProfitViewModel
+    {
+        [Required(ErrorMessage = "قیمت فروش الزامی است")]
+        [Range(1, 10000000000000000000, ErrorMessage = "قیمت فروش باید از صفر بزرگتر باشد")]
+        public decimal SellPrice { get; set; }
+        [Required(ErrorMessage = "قیمت خرید الزامی است")]
+        [Range(1, 10000000000000000000, ErrorMessage = "قیمت خرید باید از صفر بزرگتر باشد")]
+        public decimal BuyPrice { get; set; }
+        // هزینه های فروشنده
+        public decimal SellerCost { get; set; } = 10000;
+        // هزینه انبار داری و ...
+        public decimal DigiKalaCost { get; set; } = 0;
+        public decimal Commission { get; set; } = 8;
+        public decimal Incom { get; set; } = 0;
+        public decimal Profit { get; set; } = 0;
+        public decimal ProfitPercent { get; set; } = 0;
+    }
+}
