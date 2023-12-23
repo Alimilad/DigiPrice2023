@@ -79,7 +79,7 @@
         </div>
 
         <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
-            <p>  درصد سود: @model.ProfitPercent.NumberToText(Language.Persian) + " ریال "</p>
+            <p>  درصد سود: @model.ProfitPercentSell.NumberToText(Language.Persian) + " % "</p>
         </div>
     
 
@@ -135,6 +135,8 @@
         public decimal Commission { get; set; } = 8;
         public decimal Incom { get; set; } = 0;
         public decimal Profit { get; set; } = 0;
-        public decimal ProfitPercent { get; set; } = 0;
+        public decimal ProfitPercentSell { get; set; } = 0;
+        public decimal ProfitPercentIncom { get; set; } = 0;
+        public decimal ProfitPercentBuy { get; set; } = 0;
     }
 }
