@@ -111,7 +111,7 @@
         var cost = Math.Min(800000, Math.Max(90000, sell * (decimal)0.07));
         var costTax = cost * (decimal)0.5 * (decimal)0.09;
         model.Incom = Math.Round(sell - commistion - commistionTax - cost - costTax - model.SellerCost, 2);
-        model.Profit = Math.Round(model.Incom - buy - model.SellerCost, 2);
+        model.Profit = Math.Round(model.Incom - buy, 2);
         model.ProfitPercentSell = Math.Round(model.Profit * 100 / sell, 2);
         model.ProfitPercentIncom = Math.Round(model.Profit * 100 / model.Incom, 2);
         model.ProfitPercentBuy = Math.Round(model.Profit * 100 / buy, 2);

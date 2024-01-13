@@ -16,7 +16,7 @@
             <ValidationMessage For="() => model.Commission" />
 
         </div>
-       
+
         <div class="mb-4">
             <label class="block mb-1"> هزینه ها</label>
             <InputNumber @bind-Value=model.Costs @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
@@ -27,7 +27,7 @@
         <div class="mb-4">
             <label class="block mb-1"> سود</label>
             <InputNumber @bind-Value=model.Profit @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
-                        <ValidationMessage For="() => model.Profit" />
+            <ValidationMessage For="() => model.Profit" />
         </div>
 
         <div class="grid place-items-center">
@@ -51,20 +51,38 @@
     public void Submited()
     {
         Result = "";
-        if(model.SellPrice < 128500)
+
+        if (model.SellPrice < 128500)
         {
 
-            var x = 100 * model.SellPrice - 1.09 * model.Commission * model.SellPrice - 981000 -100 * model.Costs - model.Profit * model.Costs;
+            var x = 100 * model.SellPrice - 1.09 * model.Commission * model.SellPrice - 981000 - 100 * model.Costs - model.Profit * model.Costs;
             var y = model.Profit + 100;
 
-            Result = ((int)(x / y)).NumberToText(Language.Persian) + " تومن ";
+            //Result = ((int)(x / y)).NumberToText(Language.Persian) + " تومن ";
+
+            var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
+                                             model.Costs, model.Commission / 100.0, (double)(x / y));
+
+            Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " تومن ";
         }
         else
         {
-            Result = "نامشخص";
-        }
 
-    //double sood = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs) / (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value));
+            double cost = Math.Min(80000, Math.Max(9000, (double)model.SellPrice * 0.07));
+
+            double x = 100 * (int)model.SellPrice - 1.09 * model.Commission * (int)model.SellPrice
+                    - (cost) - 100 * model.Costs - model.Profit * model.Costs;
+
+            var y = model.Profit + 100;
+
+
+            var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
+                                             model.Costs, model.Commission / 100.0, x / y);
+
+            Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " تومن ";
+
+        }
+        //double sood = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs) / (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value));
 
         //if (model.SellPrice.Value > 71430)
         //{
@@ -76,7 +94,62 @@
         //model.ResultProfitInToman = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs).ToString("0.00");
     }
 
+    /// <summary>
+    /// این تابع با آزمون و خطا بهترین قیمت خرید با توجه به درصد مدنظر فروشنده را پیدا میکند
+    /// چون نمیتوان فرمول را مستقیم نوشت مجبوریم کمی آزمون و خطا انجام دهیم
+    /// </summary>
+    /// <param name="targetPercent">درصد سود مورد نظر از قیمت خرید</param>
+    /// <param name="sellPrice">قیمت فروش محصول روی دیجیکالا</param>
+    /// <param name="costs">هزینه های خود فروشنده مثل هزینه های بسته بندی و چاپ لیبل و ...</param>
+    /// <param name="commission">درصد کمیسیون گروه کالایی که دیجیکالا از قیمت فروش برمیداره</param>
+    /// <param name="initialeStimatePrice">تخمین اولیه قیمت خرید</param>
+    /// <returns></returns>
+    public double CalcTargetBuyPrice(
+        double targetPercent, double sellPrice,
+        double costs, double commission,
+        double initialeStimatePrice)
+    {
+        double profitPercentBuy = 0;
+        double sellerCost = costs;
+        double sell = sellPrice;
+        double buy = initialeStimatePrice;
 
+        int increase = 0;
+        int decrease = 0;
+
+        do
+        {
+
+            //var fee = sell * commission / 100;
+            double fee = sell * commission;
+            double commistionTax = fee * 0.09;
+            double cost = Math.Min(80000, Math.Max(9000, sell * 0.07));
+            double costTax = cost * 0.5 * 0.09;
+            //double costTax = cost * 0.09;
+            double incom = sell - fee - commistionTax - cost - costTax - sellerCost;
+            double profit = incom - buy;
+            //var profitPercentSell = Math.Round(profit * 100 / sell, 2);
+            //var profitPercentIncom = Math.Round(profit * 100 / incom, 2);
+            profitPercentBuy = Math.Round(profit / buy, 4);
+
+            if (profitPercentBuy > targetPercent)
+            {
+                buy += 10;
+                increase++;
+            }
+            else if (profitPercentBuy < targetPercent)
+            {
+                buy -= 10;
+                decrease++;
+            }
+
+            if (increase > 0 && decrease > 0)
+                break;
+
+        } while (profitPercentBuy != targetPercent);
+
+        return buy;
+    }
 
     public class CalculateBuyPriceViewModel
     {
@@ -86,5 +159,5 @@
         public int Costs { get; set; } = 1000;
         public int Commission { get; set; } = 15;
         public int Profit { get; set; } = 20;
-    }   
+    }
 }
