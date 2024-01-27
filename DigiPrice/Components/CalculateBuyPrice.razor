@@ -41,6 +41,10 @@
         <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
             <p>  قیمت خرید: @Result</p>
         </div>
+
+        <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
+            <p>قیمت خرید: @model.BuyPrice + " تومان "</p>
+        </div>
     }
 
 </div>
@@ -78,6 +82,8 @@
 
             var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
                                              model.Costs, model.Commission / 100.0, x / y);
+
+            model.BuyPrice = (int)tmpTest; 
 
             Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " تومن ";
 
@@ -156,6 +162,7 @@
         [Required(ErrorMessage = "قیمت فروش الزامی است")]
         [Range(1, 10000000000000000000, ErrorMessage = "قیمت فروش باید از صفر بزرگتر باشد")]
         public int? SellPrice { get; set; }
+        public int? BuyPrice { get; set; }
         public int Costs { get; set; } = 1000;
         public int Commission { get; set; } = 15;
         public int Profit { get; set; } = 20;
