@@ -1,7 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations;
 @using DNTPersianUtils.Core;
 ﻿<div class="px-4 py-2 text-justify">
-    <h1 class="text-center bold text-2xl ">محاسبه قیمت خرید </h1>
+    <h1 class="text-center bold text-2xl ">محاسبه قیمت خرید (ریال) </h1>
     <EditForm Model="@model" OnValidSubmit="Submited">
         <DataAnnotationsValidator />
         <div class="mb-4">
@@ -43,7 +43,7 @@
         </div>
 
         <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
-            <p>قیمت خرید: @model.BuyPrice + " تومان "</p>
+            <p>قیمت خرید: @model.BuyPrice + " ریال "</p>
         </div>
     }
 
@@ -56,10 +56,10 @@
     {
         Result = "";
 
-        if (model.SellPrice < 128500)
+        if (model.SellPrice < 1430000)
         {
 
-            var x = 100 * model.SellPrice - 1.09 * model.Commission * model.SellPrice - 981000 - 100 * model.Costs - model.Profit * model.Costs;
+            var x = 100 * model.SellPrice - 1.1 * model.Commission * model.SellPrice - 105000 - 100 * model.Costs - model.Profit * model.Costs;
             var y = model.Profit + 100;
 
             //Result = ((int)(x / y)).NumberToText(Language.Persian) + " تومن ";
@@ -67,14 +67,14 @@
             var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
                                              model.Costs, model.Commission / 100.0, (double)(x / y));
 
-            Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " تومن ";
+            Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " ریال ";
         }
         else
         {
 
-            double cost = Math.Min(80000, Math.Max(9000, (double)model.SellPrice * 0.07));
+            double cost = Math.Min(1000000, Math.Max(100000, (double)model.SellPrice * 0.07));
 
-            double x = 100 * (int)model.SellPrice - 1.09 * model.Commission * (int)model.SellPrice
+            double x = 100 * (int)model.SellPrice - 1.1 * model.Commission * (int)model.SellPrice
                     - (cost) - 100 * model.Costs - model.Profit * model.Costs;
 
             var y = model.Profit + 100;
@@ -128,9 +128,9 @@
 
             //var fee = sell * commission / 100;
             double fee = sell * commission;
-            double commistionTax = fee * 0.09;
-            double cost = Math.Min(80000, Math.Max(9000, sell * 0.07));
-            double costTax = cost * 0.5 * 0.09;
+            double commistionTax = fee * 0.1;
+            double cost = Math.Min(1000000, Math.Max(100000, sell * 0.07));
+            double costTax = cost * 0.5 * 0.1;
             //double costTax = cost * 0.09;
             double incom = sell - fee - commistionTax - cost - costTax - sellerCost;
             double profit = incom - buy;
@@ -163,7 +163,7 @@
         [Range(1, 10000000000000000000, ErrorMessage = "قیمت فروش باید از صفر بزرگتر باشد")]
         public int? SellPrice { get; set; }
         public int? BuyPrice { get; set; }
-        public int Costs { get; set; } = 1000;
+        public int Costs { get; set; } = 10000;
         public int Commission { get; set; } = 15;
         public int Profit { get; set; } = 20;
     }
