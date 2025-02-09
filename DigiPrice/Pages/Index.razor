@@ -1,10 +1,44 @@
 ﻿@page "/"
+
+<div class="bg-blue-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3 flex flex-row" style="justify-content: space-between;background-color: #EBF8FF;color: #2B6CB0;">
+    <h2>تاریخ آخرین بروزرسانی 21 بهمن 1403</h2>
+    <h2>@TodayShamsi</h2>
+</div>
+
+
+
+
 <div class="flex flex-col justify-around md:flex-row">
     <CalculateBuyPrice/>
     
 </div>
 
-<div class="flex flex-col justify-around md:flex-row">
+@* <div class="flex flex-col justify-around md:flex-row">
  
     <CalculateProfit />
-</div>
+</div> *@
+
+@code {
+    public string TodayShamsi { get; set; }
+
+    protected override void OnInitialized()
+    {
+        TodayShamsi = GetPersianDate();
+    }
+
+    private string GetPersianDate()
+    {
+        System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
+        DateTime now = DateTime.Now;
+        return $"{pc.GetDayOfWeek(now)}, {pc.GetDayOfMonth(now)} {GetPersianMonthName(pc.GetMonth(now))} {pc.GetYear(now)}";
+    }
+
+    private string GetPersianMonthName(int month)
+    {
+        string[] months = {
+            "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+            "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+    };
+        return months[month - 1];
+    }
+}

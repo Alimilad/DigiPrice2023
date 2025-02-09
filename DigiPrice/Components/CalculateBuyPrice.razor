@@ -1,7 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations;
 @using DNTPersianUtils.Core;
 ﻿<div class="px-4 py-2 text-justify">
-    <h1 class="text-center bold text-2xl ">محاسبه قیمت خرید (ریال) </h1>
+    <h1 class="text-center bold text-2xl ">محاسبه قیمت خرید (تومان) </h1>
     <EditForm Model="@model" OnValidSubmit="Submited">
         <DataAnnotationsValidator />
         <div class="mb-4">
@@ -39,12 +39,10 @@
     @if (!string.IsNullOrEmpty(Result))
     {
         <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
-            <p>  قیمت خرید: @Result</p>
-        </div>
+            <p> قیمت خرید: @Result</p>
+        </div>  
+        
 
-        <div class="font-bold  text-green-500 mt-2 px-4 py-3" role="alert">
-            <p>قیمت خرید: @model.BuyPrice + " ریال "</p>
-        </div>
     }
 
 </div>
@@ -52,42 +50,56 @@
 @code {
     CalculateBuyPriceViewModel model = new();
     string Result = "";
+    double DigiShare;
     public void Submited()
     {
         Result = "";
-
-        if (model.SellPrice < 1430000)
+        DigiShare = 0;
+        if (model.SellPrice < 214300)
         {
-
-            var x = 100 * model.SellPrice - 1.1 * model.Commission * model.SellPrice - 105000 - 100 * model.Costs - model.Profit * model.Costs;
-            var y = model.Profit + 100;
-
-            //Result = ((int)(x / y)).NumberToText(Language.Persian) + " تومن ";
-
-            var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
-                                             model.Costs, model.Commission / 100.0, (double)(x / y));
-
-            Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " ریال ";
+            DigiShare = 1.09 * model.Commission/100 * model.SellPrice + 15675;
         }
         else
         {
-
-            double cost = Math.Min(1000000, Math.Max(100000, (double)model.SellPrice * 0.07));
-
-            double x = 100 * (int)model.SellPrice - 1.1 * model.Commission * (int)model.SellPrice
-                    - (cost) - 100 * model.Costs - model.Profit * model.Costs;
-
-            var y = model.Profit + 100;
-
-
-            var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
-                                             model.Costs, model.Commission / 100.0, x / y);
-
-            model.BuyPrice = (int)tmpTest; 
-
-            Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " تومن ";
+            DigiShare = 1.09 * model.SellPrice * (0.07 + model.Commission/100);
 
         }
+
+        Result = ((int)(model.SellPrice - DigiShare - model.Costs) / 1 + (model.Profit / 100)).NumberToText(Language.Persian) + " تومن ";
+        
+
+        // if (model.SellPrice < 1430000)
+        // {
+
+        //     var x = 100 * model.SellPrice - 1.1 * model.Commission * model.SellPrice - 105000 - 100 * model.Costs - model.Profit * model.Costs;
+        //     var y = model.Profit + 100;
+
+        //     //Result = ((int)(x / y)).NumberToText(Language.Persian) + " تومن ";
+
+        //     var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
+        //                                      model.Costs, model.Commission / 100.0, (double)(x / y));
+
+        //     Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " ریال ";
+        // }
+        // else
+        // {
+
+        //     double cost = Math.Min(1000000, Math.Max(100000, (double)model.SellPrice * 0.07));
+
+        //     double x = 100 * (int)model.SellPrice - 1.1 * model.Commission * (int)model.SellPrice
+        //             - (cost) - 100 * model.Costs - model.Profit * model.Costs;
+
+        //     var y = model.Profit + 100;
+
+
+        //     var tmpTest = CalcTargetBuyPrice(model.Profit / 100.0, (double)model.SellPrice,
+        //                                      model.Costs, model.Commission / 100.0, x / y);
+
+        //     model.BuyPrice = (int)tmpTest; 
+
+        //     Result = ((int)(tmpTest)).NumberToText(Language.Persian) + " تومن ";
+
+        // }
         //double sood = (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value) - model.BuyPrice.Value - model.Costs) / (model.SellPrice.Value - 1.09 * (model.Boxing + model.Commission * model.SellPrice.Value));
 
         //if (model.SellPrice.Value > 71430)
@@ -161,10 +173,10 @@
     {
         [Required(ErrorMessage = "قیمت فروش الزامی است")]
         [Range(1, 10000000000000000000, ErrorMessage = "قیمت فروش باید از صفر بزرگتر باشد")]
-        public int? SellPrice { get; set; }
+        public int SellPrice { get; set; }
         public int? BuyPrice { get; set; }
         public int Costs { get; set; } = 10000;
-        public int Commission { get; set; } = 15;
-        public int Profit { get; set; } = 20;
+        public int Commission { get; set; } = 21;
+        public int Profit { get; set; } = 25;
     }
 }
