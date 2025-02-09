@@ -65,7 +65,7 @@
 
         }
 
-        Result = ((int)(model.SellPrice - DigiShare - model.Costs) / 1 + (model.Profit / 100)).NumberToText(Language.Persian) + " تومن ";
+        Result = ((int)(model.SellPrice - DigiShare - model.Costs) / (1 + (model.Profit / 100))).NumberToText(Language.Persian) + " تومن ";
         
 
         // if (model.SellPrice < 1430000)
