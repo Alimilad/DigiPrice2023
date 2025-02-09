@@ -30,7 +30,7 @@
     {
         System.Globalization.PersianCalendar pc = new System.Globalization.PersianCalendar();
         DateTime now = DateTime.Now;
-        return $"{pc.GetDayOfWeek(now)}, {pc.GetDayOfMonth(now)} {GetPersianMonthName(pc.GetMonth(now))} {pc.GetYear(now)}";
+        return $" {pc.GetDayOfMonth(now)} {GetPersianMonthName(pc.GetMonth(now))} {pc.GetYear(now)}";
     }
 
     private string GetPersianMonthName(int month)
