@@ -13,7 +13,11 @@
         </div>
 
         <div class="mb-4">
-            <label class="block mb-1">قیمت خرید</label>
+            <label class="block mb-1">قیمت خرید
+                <span style="color: red;">
+                    (حتما کمیسیون پیشفرض را تغییر دهید)
+                </span>
+            </label>
             <InputNumber @bind-Value=model.BuyPrice @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
             <ValidationMessage For="() => model.BuyPrice" />
 
@@ -110,7 +114,7 @@
         var Tax = (decimal)0.1;
         var commistion = sell * model.Commission/100;
         var commistionTax = commistion * Tax;
-        var cost = Math.Min(1000000, Math.Max(100000, sell * (decimal)0.07));
+        var cost = Math.Min(1000000, Math.Max(150000, sell * (decimal)0.07));
         var costTax = cost * (decimal)0.5 * Tax;
         model.Incom = Math.Round(sell - commistion - commistionTax - cost - costTax - model.SellerCost, 2);
         model.Profit = Math.Round(model.Incom - buy, 2);
@@ -134,7 +138,7 @@
         public decimal SellerCost { get; set; } = 10000;
         // هزینه انبار داری و ...
         public decimal DigiKalaCost { get; set; } = 0;
-        public decimal Commission { get; set; } = 8;
+        public decimal Commission { get; set; } = 9;
         public decimal Incom { get; set; } = 0;
         public decimal Profit { get; set; } = 0;
         public decimal ProfitPercentSell { get; set; } = 0;
