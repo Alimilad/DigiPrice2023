@@ -14,9 +14,7 @@
 
         <div class="mb-4">
             <label class="block mb-1">قیمت خرید
-                <span style="color: red;">
-                    (حتما کمیسیون پیشفرض را تغییر دهید)
-                </span>
+                
             </label>
             <InputNumber @bind-Value=model.BuyPrice @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
             <ValidationMessage For="() => model.BuyPrice" />
@@ -24,7 +22,11 @@
         </div>
 
         <div class="mb-4">
-            <label class="block mb-1"> کمیسیون</label>
+            <label class="block mb-1"> کمیسیون
+                <span style="color: red;">
+                    (حتما کمیسیون پیشفرض را تغییر دهید)
+                </span>
+            </label>
             <InputNumber @bind-Value=model.Commission @bind-Value:format="F2" class="w-full h-10 px-3 text-base placeholder-gray-600 border border-gray-700 rounded-lg focus:shadow-outline" />
             <ValidationMessage For="() => model.Commission" />
 
